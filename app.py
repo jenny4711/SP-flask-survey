@@ -49,6 +49,7 @@ def qts(id):
     # else:
     #   return redirect('/done')
     questions=survey.questions
+    print(survey.questions[0])
     question=questions[len(responses)] 
     return render_template('question.html',question=question,questions=questions)
 
