@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Question{% endblock %}
+   
+{% block content %}
+
+<h2>{{question}}</h2>
+<form action="/answer" method="POST">
+<input type="radio" name="answer" placeholder="Listen">
+
+ 
+  
+
+</form>
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
