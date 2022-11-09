@@ -1,6 +1,7 @@
-from flask import Flask,request, render_template 
+from flask import Flask,request, render_template ,redirect,flash
 from flask_debugtoolbar import DebugToolbarExtension
 from surveys import satisfaction_survey as survey
+from flask import session,make_response
 
 
 app=Flask(__name__) 
@@ -23,6 +24,8 @@ def home_page():
 
 
 
+
+
 @app.route('/question')
 def question():
   questions=survey.questions
@@ -30,27 +33,46 @@ def question():
 
 
 
-@app.route('/answer',methods=["POST"])
-def answer():
-    answer=request.form["answer"]
-    responses.append(answer)
-  
-    return redirect('/question')
-  
-  
 @app.route("/question/<int:id>")
 def qts(id):
     page=len(responses)
     
-    # if len(responses)!=id:
-    #   return redirect(f'/question/{page}')
-    # elif len(responses)==0:
-    #   return redirect('/')
-    # else:
-    #   return redirect('/done')
+    if len(responses)!=id:
+      flash('error','You dont have to skip the question')
+      return redirect(f'/question/{page}')
+    elif survey.questions ==0:
+      return redirect('/')
+    elif len(survey.questions) == page:  
+      return redirect('/done')
+   
     questions=survey.questions
-    print(survey.questions[0])
-    question=questions[len(responses)] 
+    
+    
+    question=questions[page] 
+    
     return render_template('question.html',question=question,questions=questions)
+
+
+
+@app.route('/answer',methods=["POST"])
+def answer():
+    answer=request.form["answer"]
+    session['RES']=responses
+    responses.append(answer)
+    print('***********')
+    print(session['RES'])
+    print('***********')
+   
+  
+    
+    return redirect(f'/question/{len(responses)}')
+  
+@app.route('/done')
+def done():
+    return render_template('done.html')
+  
+  
+  
+
 
 
